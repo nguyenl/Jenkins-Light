@@ -47,6 +47,7 @@ void setup() {
   pinMode(3, OUTPUT);
   pinMode(2, OUTPUT);
 
+
   Serial.begin(9600);     // opens serial port, sets data rate to 9600 bps 
 }
 
@@ -71,15 +72,23 @@ void loop() {
 void green() {
   digitalWrite(13, HIGH);
   digitalWrite(12, HIGH);
+  digitalWrite(10, LOW);
+  digitalWrite(9, LOW);
+  digitalWrite(8, LOW);
+  digitalWrite(4, LOW);
+  digitalWrite(3, LOW);
+  digitalWrite(2, LOW);
   delay(1000);
-  digitalWrite(13, LOW);
-  digitalWrite(12, LOW);
-  delay(500);
 }
 
 
 void yellow() {
-  long yellowDelay = 50;
+  digitalWrite(13, LOW);
+  digitalWrite(12, LOW);
+  digitalWrite(4, LOW);
+  digitalWrite(3, LOW);
+  digitalWrite(2, LOW);
+  long yellowDelay = 125;
   digitalWrite(10, HIGH);
   digitalWrite(9, HIGH);
   digitalWrite(8, HIGH);
@@ -91,14 +100,14 @@ void yellow() {
 }
 
 void red() {
-  long redDelay = 250;
   digitalWrite(2, HIGH);
   digitalWrite(3, HIGH);
   digitalWrite(4, HIGH);
-  delay(redDelay);
-  digitalWrite(2, LOW);
-  digitalWrite(3, LOW);
-  digitalWrite(4, LOW);
-  delay(redDelay);
+  digitalWrite(13, LOW);
+  digitalWrite(12, LOW);
+  digitalWrite(10, LOW);
+  digitalWrite(9, LOW);
+  digitalWrite(8, LOW);
+  delay(1000);
 }
 
