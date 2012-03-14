@@ -56,15 +56,18 @@ def change_light(state):
 
 
 def check_jenkins():
-    jobs = j.get_jobs()
-    for (name, job) in jobs:
-        if j[name].get_last_build().is_running():
-            change_light(BUILDING)
-            return
-        elif not j[name].get_last_build().is_good():
-            change_light(FAILURE)
-            return
-    change_light(SUCCESS)
+    try:
+        jobs = j.get_jobs()
+        for (name, job) in jobs:
+            if j[name].get_last_build().is_running():
+                change_light(BUILDING)
+                return
+            elif not j[name].get_last_build().is_good():
+                change_light(FAILURE)
+                return
+        change_light(SUCCESS)
+    except:
+        print "Unable to query jenkins:", sys.exc_info()[0]
 
 
 if __name__ == "__main__":
