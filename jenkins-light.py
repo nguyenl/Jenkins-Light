@@ -25,6 +25,7 @@
 # controlled by arduino.
 import serial
 import time
+import sys
 from jenkinsapi import jenkins
 
 
@@ -36,7 +37,7 @@ BAUD_RATE = 9600
 SUCCESS = 'g'
 FAILURE = 'r'
 BUILDING = 'y'
-QUERY_FREQUENCY = 1 # Frequency to query jenkins, in seconds.
+QUERY_FREQUENCY = 30 # Frequency to query jenkins, in seconds.
 
 # Connect to the Arduino board.
 ser = serial.Serial(DEVICE_PATH, BAUD_RATE)
@@ -59,7 +60,11 @@ def check_jenkins():
     try:
         jobs = j.get_jobs()
         for (name, job) in jobs:
-            if j[name].get_last_build().is_running():
+            if not j[name]._data['lastBuild']:
+                # If a job has never been built, skip it.
+                continue
+            last_build = j[name].get_last_build()
+            if last_build and last_build.is_running():
                 change_light(BUILDING)
                 return
             elif not j[name].get_last_build().is_good():
@@ -67,6 +72,7 @@ def check_jenkins():
                 return
         change_light(SUCCESS)
     except:
+        change_light(FAILURE)
         print "Unable to query jenkins:", sys.exc_info()[0]
 
 
