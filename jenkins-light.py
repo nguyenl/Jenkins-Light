@@ -60,14 +60,16 @@ def check_jenkins():
     try:
         jobs = j.get_jobs()
         for (name, job) in jobs:
-            if not j[name]._data['lastBuild']:
+            if not job.is_enabled():
+                continue
+            if not job._data['lastBuild']:
                 # If a job has never been built, skip it.
                 continue
-            last_build = j[name].get_last_build()
+            last_build = job.get_last_build()
             if last_build and last_build.is_running():
                 change_light(BUILDING)
                 return
-            elif not j[name].get_last_build().is_good():
+            elif not job.get_last_build().is_good():
                 change_light(FAILURE)
                 return
         change_light(SUCCESS)
