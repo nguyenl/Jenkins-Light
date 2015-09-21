@@ -30,7 +30,7 @@ from jenkinsapi import jenkins
 
 
 # Configuration
-JENKINS_URL = 'http://localhost:8080/'
+JENKINS_URL = 'http://localhost/'
 DEVICE_PATH = '/dev/ttyUSB0'
 BAUD_RATE = 9600
 
@@ -38,6 +38,10 @@ SUCCESS = 'g'
 FAILURE = 'r'
 BUILDING = 'y'
 QUERY_FREQUENCY = 30 # Frequency to query jenkins, in seconds.
+
+
+# The view name to filter by. If None, then check all jobs.
+VIEW_NAME = None
 
 # Connect to the Arduino board.
 ser = serial.Serial(DEVICE_PATH, BAUD_RATE)
@@ -58,10 +62,16 @@ def change_light(state):
 
 def check_jenkins():
     try:
+        if VIEW_NAME:
+            job_names = j.views[VIEW_NAME].keys()
+
         jobs = j.get_jobs()
         for (name, job) in jobs:
             if not job.is_enabled():
                 continue
+            if job_names:
+                if name not in job_names:
+                    continue
             if not job._data['lastBuild']:
                 # If a job has never been built, skip it.
                 continue
